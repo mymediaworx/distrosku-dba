@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'version' => '0.1.0',
+    'version' => '0.1.1',
     'down_after' => (int) env('DBA_DOWN_AFTER', 2),      // failed polls in a row before an instance is "down"
     'http_timeout' => (int) env('DBA_HTTP_TIMEOUT', 20),
     'alert_emails' => env('DBA_ALERT_EMAILS'),             // extra comma-separated recipients (admins always get alerts)

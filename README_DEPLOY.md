@@ -1,4 +1,4 @@
-# DistroSKU DBA 0.1.0 — instance manager for DistroSKU ERP
+# DistroSKU DBA 0.1.1 — instance manager for DistroSKU ERP
 
 `https://dba.distrosku.com` — one admin panel for every ERP instance: health, backups/restore, the suspend switch, versioned global rules and releases.
 Laravel 12 + Filament 3, PHP 8.2+, MySQL. This file contains no secrets; every secret is created on the server.
@@ -21,37 +21,38 @@ Security: admin-only panel (users without `is_admin` get 403); no default user o
 4. Site Tools → MySQL → create a database and a user with All Privileges on it. Note the names and password (keep them in your password manager, not in a file).
 
 ## 2. Upload
-1. File Manager → open `dba.distrosku.com/` (the folder that contains `public_html`). Upload `distrosku-dba-0.1.0.zip` and extract it there.
+1. File Manager → open `dba.distrosku.com/` (the folder that contains `public_html`). Upload `distrosku-dba-0.1.1.zip` and extract it there.
    You get `dba.distrosku.com/laravel/` (the app, outside the web root) and `dba.distrosku.com/public_html/` (web files; `index.php` already points at `../laravel`), plus this README.
    If `public_html` already had files from SiteGround (default `index.html`), delete them.
 2. Delete the zip.
-3. Check the sha256 of the zip before uploading if you like: `sha256sum distrosku-dba-0.1.0.zip`.
+3. Check the sha256 of the zip before uploading if you like: `sha256sum distrosku-dba-0.1.1.zip`.
 
-## 3. Configure (SSH — Site Tools → Devs → SSH Keys Manager)
-```bash
-cd ~/www/dba.distrosku.com/laravel
-cp .env.example .env
-chmod 600 .env
-nano .env        # edit over SSH — do NOT open .env in the File Manager editor
-```
-Fill in: `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, the `MAIL_*` settings (SiteGround mail or SMTP), `MAIL_FROM_ADDRESS`, `DBA_OWNER_EMAIL=michael@brandworx.ai`, `DBA_OWNER_NAME`. Leave `DBA_OWNER_PASSWORD` empty (you'll be prompted). Optional: `DBA_ALERT_EMAILS`, `DBA_GITHUB_REPO` (+ a read-only `DBA_GITHUB_TOKEN` if the repo is private) or `DBA_LATEST_VERSION`.
+## 3. Run the one-time web setup (no SSH needed)
+The zip contains `public_html/setup-<token>.php`. The token is long and random; the exact filename and URL are given to you separately (it is not written in this README).
+1. Open `https://dba.distrosku.com/setup-<token>.php?token=<token>` — **HTTPS only**; a wrong or missing token returns "Not found" (after a delay).
+2. Fill in:
+   - **Database:** host (`localhost` on SiteGround), database name, user, password (from step 1.4).
+   - **Owner login:** email (prefilled `michael@brandworx.ai`), name, password + confirm (12+ characters).
+   - **Mail for alerts** (optional, can be added later): SMTP host, port, username, password, from address. Without it, alert mails go to the log.
+3. Press **Install**. It checks the database connection, then:
+   writes `laravel/.env` (APP_ENV=production, APP_DEBUG=false, APP_URL=https://dba.distrosku.com, your DB/mail values; mode 600) →
+   makes `storage/` and `bootstrap/cache/` writable → `key:generate` → `migrate --force` → creates the owner (password stored hashed only) →
+   `dba:import-rules --publish` (global rules v1) → `optimize` + `filament:optimize` → **deletes itself** and shows **Setup complete**.
+4. Sign in at `https://dba.distrosku.com/login`.
+5. Confirm in File Manager that `public_html/setup-*.php` is gone (delete it if the page said it could not).
 
-```bash
-php artisan key:generate --force
-php artisan migrate --force
-php artisan dba:make-owner                 # prompts for a password (min 12 chars); creates the admin
-php artisan dba:import-rules --publish     # global rules v1 (bundled database/data/rules-v1.json)
-php artisan config:cache && php artisan route:cache && php artisan view:cache
-php artisan filament:optimize
-```
-Then sign in at `https://dba.distrosku.com/login`.
+Safety: the page refuses to run if `laravel/.env` already exists (so it can never overwrite a live install), only accepts posts carrying its own signed form nonce (1-hour validity), and never shows a password in its output or log.
+If it stops halfway after writing `.env`, fix the cause, delete `laravel/.env` in File Manager (don't open it), re-upload the setup file from the zip if it is gone, and run it again.
+Later changes to settings (mail, GitHub repo, alert addresses) are made by editing `laravel/.env` — do that over SSH or by downloading/re-uploading it; don't open `.env` in the File Manager editor.
 
 ## 4. Cron (required — health checks every 5 minutes)
-Site Tools → Devs → Cron Jobs → every minute (`* * * * *`):
+Site Tools → Devs → **Cron Jobs** → Create: interval **every minute** (`* * * * *`), command:
 ```
-cd ~/www/dba.distrosku.com/laravel && php artisan schedule:run >> /dev/null 2>&1
+php /home/customer/www/dba.distrosku.com/laravel/artisan schedule:run >> /dev/null 2>&1
 ```
-(Adjust the path to what `pwd` shows in step 3.) Check it with `php artisan schedule:list`; run one poll by hand with `php artisan dba:poll`.
+- SiteGround shows the correct home path and PHP command on the Cron Jobs page ("php /home/customer/www/…"); if yours differs, use that path. If `php` isn't found, use `/usr/local/bin/php` instead.
+- Equivalent form: `cd /home/customer/www/dba.distrosku.com/laravel && php artisan schedule:run >> /dev/null 2>&1`.
+- The scheduler runs `dba:poll` every 5 minutes. After a few minutes, each instance's *Last check-in* on the dashboard should update.
 
 ## 5. Register vegatest1
 1. vegatest1 must run ERP **0.20.8** (run its upgrade page as usual) — the manager API is part of that release.
@@ -70,7 +71,7 @@ php artisan erp:restore <file-or-full-path>    # verifies, safety backup first, 
 Restoring a backup **from another instance** is CLI-only in 0.1.0: copy the zip to the target host and run `erp:restore /full/path/to.zip`. Encrypted settings only stay readable when both instances share the same APP_KEY.
 
 ## Upgrading the manager later
-Upload the new zip, extract over `laravel/` and `public_html/` (keep `laravel/.env` and `laravel/storage/`), then `php artisan migrate --force && php artisan optimize`.
+Upload the new zip, extract over `laravel/` and `public_html/` (keep `laravel/.env` and `laravel/storage/`), delete the new `public_html/setup-*.php` (it refuses to run on an installed site anyway), then run `php artisan migrate --force && php artisan optimize` (SSH, or a one-off cron job with the same `php …/artisan` form).
 
 ## Troubleshooting
 - Instance shows "bad signature": the secret on the ERP and the manager differ — use *New link secret* and paste it on the ERP again.

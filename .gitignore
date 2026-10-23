@@ -26,3 +26,4 @@ Thumbs.db
 *.zip
 *.zip.sha256
 /database/*.sqlite
+/.setup_token
