@@ -2,7 +2,7 @@
 # Packages DistroSKU DBA for SiteGround: laravel/ + public_html/ + README_DEPLOY.md. No .env, no storage contents, no secrets.
 set -euo pipefail
 cd "$(dirname "$0")"
-V=$(php -r '$c=require "config/dba.php"; echo $c["version"];')
+V=$(grep -oP "'version' => '\K[0-9.]+" config/dba.php)
 OUT=distrosku-dba-$V.zip
 rm -rf stage "$OUT" && mkdir -p stage/laravel stage/public_html
 rsync -a --exclude /public --exclude /vendor --exclude /node_modules --exclude /.env --exclude '/.env.*' --include /.env.example \

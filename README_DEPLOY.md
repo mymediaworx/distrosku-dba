@@ -4,10 +4,10 @@
 Laravel 12 + Filament 3, PHP 8.2+, MySQL. This file contains no secrets; every secret is created on the server.
 
 ## What it does
-- **Instances** — register each ERP (name, slug, URL, prod/test). The manager generates a 64-char shared secret, shows it **once**, and stores it encrypted (it must be reversible to sign requests). Rotate any time (the old secret stops working immediately).
+- **Instances** — register each ERP (name, slug, URL, prod/test). The manager generates a 64-char shared secret, shows it **once**, and stores it encrypted (it must be reversible to sign requests). *New link secret* replaces it any time (the old secret stops working immediately).
 - **Health** — every 5 minutes (cron) the manager calls each ERP's signed `/dba-api/status`: version, DB, queue, disk, last backup, rules version. Two failed polls in a row = **down**: the dashboard flags it and admins (+ `DBA_ALERT_EMAILS`) get one email; another email when it recovers.
-- **Backups** — *Back up now*, list (synced from the instance, with size + sha256), *Verify*, *Restore* (type the slug to confirm; the ERP verifies the checksum and takes a safety backup first). Nightly backups (01:30, 14 daily + 8 weekly) run on the ERP itself and keep running while suspended.
-- **Suspend switch** — *Suspend* (type the slug) shows "This account is suspended" (HTTP 503) on the ERP for everyone; **no data is changed**. *Resume* restores it. Both are audited.
+- **Backups** — *Back up now*, list (synced from the instance, with size + sha256), *Verify checksums*, *Restore…* (type the instance id to confirm; the ERP verifies the checksum and takes a safety backup first). Nightly backups (01:30, 14 daily + 8 weekly) run on the ERP itself and keep running while suspended.
+- **Suspend switch** — *Suspend* (type the instance id) shows "This account is suspended" (HTTP 503) on the ERP for everyone; **no data is changed**. *Resume* restores it. Both are audited.
 - **Global rules** — versioned sets (license types, eligibility rules, compliance rules, tax rates). v1 is imported from the ERP export. Drafts are editable, published sets are immutable; *Preview & push* shows per-instance create/update/same counts before writing; pushes are idempotent, rows are upserted by code and marked *managed* (read-only) on the ERP, never deleted.
 - **Releases** — each instance's version vs the latest (GitHub tags if `DBA_GITHUB_REPO` is set, else `DBA_LATEST_VERSION`, else the newest instance). One-click upgrade is a disabled stub in 0.1.0.
 - **Audit log** — every sign-in, registration, secret rotation, backup, restore, suspend/resume, rule push and rejected signature.
@@ -55,8 +55,8 @@ cd ~/www/dba.distrosku.com/laravel && php artisan schedule:run >> /dev/null 2>&1
 
 ## 5. Register vegatest1
 1. vegatest1 must run ERP **0.20.8** (run its upgrade page as usual) — the manager API is part of that release.
-2. Manager → **Instances → Register instance**: Name `Vega Test 1`, Slug `vegatest1`, URL `https://vegatest1.distrosku.com`, Environment `test` → Create.
-3. Copy the secret from the notification (shown once; *Show secret* on the instance re-displays it for admins, *Rotate secret* replaces it).
+2. Manager → **Instances → Register instance**: Name `Vega Test 1`, Instance id `vegatest1`, URL `https://vegatest1.distrosku.com`, Environment `test` → Create.
+3. Copy the secret from the notification. It is shown **once** and never again; if you lose it, use *New link secret* on the instance and paste the new one.
 4. On vegatest1: **Settings → Instance manager** → paste the secret → Save. (Alternative: `ERP_DBA_SECRET=` and `ERP_INSTANCE=vegatest1` in vegatest1's `.env` over SSH, then `php artisan config:cache`.)
 5. Manager → the instance → **Check now**. It should turn **Active** and show version 0.20.8. Then **Back up now** and confirm the backup appears in *Backups*.
 6. Global rules → v1 → **Preview & push** → select vegatest1 → Preview → Push. The instance shows rules v1.
@@ -73,7 +73,7 @@ Restoring a backup **from another instance** is CLI-only in 0.1.0: copy the zip 
 Upload the new zip, extract over `laravel/` and `public_html/` (keep `laravel/.env` and `laravel/storage/`), then `php artisan migrate --force && php artisan optimize`.
 
 ## Troubleshooting
-- Instance shows "bad signature": the secret on the ERP and the manager differ — rotate and paste again.
+- Instance shows "bad signature": the secret on the ERP and the manager differ — use *New link secret* and paste it on the ERP again.
 - "stale timestamp": a server clock is off by more than 5 minutes.
 - "HTTP 503 not linked": the ERP has no secret yet (step 5.4).
 - Logs: `laravel/storage/logs/` (daily).
