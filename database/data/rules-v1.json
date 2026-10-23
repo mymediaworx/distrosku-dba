@@ -1,0 +1,575 @@
+{
+    "format": "distrosku-rules/1",
+    "version": 1,
+    "name": "Imported from ERP",
+    "exported_from": "0.20.8",
+    "sets": {
+        "license_types": [
+            {
+                "code": "lt:tobacco_retail",
+                "overridable": false,
+                "data": {
+                    "code": "tobacco_retail",
+                    "name": "KY Tobacco License",
+                    "state": "KY",
+                    "active": 1,
+                    "sort": 10
+                }
+            },
+            {
+                "code": "lt:hemp",
+                "overridable": false,
+                "data": {
+                    "code": "hemp",
+                    "name": "KY Hemp License",
+                    "state": "KY",
+                    "active": 1,
+                    "sort": 20
+                }
+            },
+            {
+                "code": "lt:tobacco_wholesale",
+                "overridable": false,
+                "data": {
+                    "code": "tobacco_wholesale",
+                    "name": "Tobacco Wholesale License",
+                    "state": null,
+                    "active": 1,
+                    "sort": 30
+                }
+            },
+            {
+                "code": "lt:resale",
+                "overridable": false,
+                "data": {
+                    "code": "resale",
+                    "name": "Resale Certificate",
+                    "state": null,
+                    "active": 1,
+                    "sort": 40
+                }
+            },
+            {
+                "code": "lt:kratom",
+                "overridable": false,
+                "data": {
+                    "code": "kratom",
+                    "name": "Kratom License",
+                    "state": null,
+                    "active": 1,
+                    "sort": 50
+                }
+            }
+        ],
+        "eligibility_rules": [
+            {
+                "code": "el:msa_directory",
+                "overridable": true,
+                "data": {
+                    "key": "msa_directory",
+                    "name": "State MSA directory (cigarettes / RYO)",
+                    "level": "state",
+                    "state": null,
+                    "county": null,
+                    "city": null,
+                    "subtype": null,
+                    "tax_class": null,
+                    "thc_total_max_mg": null,
+                    "thc_serving_max_mg": null,
+                    "thc_unknown_fires": 0,
+                    "synthetic_fires": 0,
+                    "flavored_fires": 0,
+                    "fda_statuses": null,
+                    "needs_msa_directory": 1,
+                    "needs_vape_directory": 0,
+                    "needs_current_coa": 0,
+                    "action": "block",
+                    "effective_from": "2000-01-01",
+                    "effective_to": null,
+                    "enabled": 1,
+                    "verify_with_counsel": 0,
+                    "source_note": "Built-in: brand family must be on the ship-to state MSA directory list loaded under Compliance > MSA directory. Strict mode (no list loaded = block) is in Settings.",
+                    "selector": null
+                }
+            },
+            {
+                "code": "el:federal_hemp_2026",
+                "overridable": true,
+                "data": {
+                    "key": "federal_hemp_2026",
+                    "name": "Federal hemp definition change (DRAFT, verify with counsel)",
+                    "level": "federal",
+                    "state": null,
+                    "county": null,
+                    "city": null,
+                    "subtype": "hemp",
+                    "tax_class": null,
+                    "thc_total_max_mg": null,
+                    "thc_serving_max_mg": null,
+                    "thc_unknown_fires": 0,
+                    "synthetic_fires": 1,
+                    "flavored_fires": 0,
+                    "fda_statuses": null,
+                    "needs_msa_directory": 0,
+                    "needs_vape_directory": 0,
+                    "needs_current_coa": 0,
+                    "action": "block",
+                    "effective_from": "2026-12-11",
+                    "effective_to": null,
+                    "enabled": 0,
+                    "verify_with_counsel": 1,
+                    "source_note": "PLACEHOLDER, verify with counsel before enabling. Federal hemp definition change reported effective 2026-12-11 (moved from 2026-11-12). No legal threshold has been entered: set \"Max total THC per container (mg)\" (and per serving if needed) and the products it covers only after counsel confirms the final text. Synthetic-cannabinoid SKUs are flagged. Use Reports > Inventory at risk with \"include draft rules\" to preview impact.",
+                    "selector": null
+                }
+            },
+            {
+                "code": "el:ky_thc_vape_registry",
+                "overridable": true,
+                "data": {
+                    "key": "ky_thc_vape_registry",
+                    "name": "KY: THC vape must be on the CHFS hemp product registry",
+                    "level": "state",
+                    "state": "KY",
+                    "county": null,
+                    "city": null,
+                    "subtype": null,
+                    "tax_class": null,
+                    "thc_total_max_mg": null,
+                    "thc_serving_max_mg": null,
+                    "thc_unknown_fires": 0,
+                    "synthetic_fires": 0,
+                    "flavored_fires": 0,
+                    "fda_statuses": null,
+                    "needs_msa_directory": 0,
+                    "needs_vape_directory": 1,
+                    "needs_current_coa": 0,
+                    "action": "block",
+                    "effective_from": "2026-10-22",
+                    "effective_to": null,
+                    "enabled": 0,
+                    "verify_with_counsel": 0,
+                    "source_note": "DISABLED until CHFS lists UPCs on the registry (0.18.2). Kentucky CHFS \"Hemp-derived Cannabinoid Registered Products\" report: https://redcap.chfs.ky.gov/surveys/?__report=LXDTXPJH9E4RAY8R . A THC vape (vape form + hemp/CBD/THC cannabinoid) sold into KY must have a current KY listing: imported from that report under Compliance > KY hemp registry, or marked listed by hand with a date. Effective date = the day this rule was added (the report shows no dates).",
+                    "selector": "thc_vape"
+                }
+            }
+        ],
+        "compliance_rules": [
+            {
+                "code": "cr:KY:license_required:cigarette_stamped:-:tobacco_retail:2020-01-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "KY",
+                    "tax_class": "cigarette_stamped",
+                    "hemp_type": null,
+                    "rule": "license_required",
+                    "banned": 0,
+                    "max_thc_mg": null,
+                    "license_type": "tobacco_retail",
+                    "effective_from": "2020-01-01",
+                    "effective_to": null,
+                    "source": "PROTOTYPE - verify before use",
+                    "notes": "Seeded starter rule; Rules Hub will supersede."
+                }
+            },
+            {
+                "code": "cr:KY:license_required:snuff_chew:-:tobacco_retail:2020-01-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "KY",
+                    "tax_class": "snuff_chew",
+                    "hemp_type": null,
+                    "rule": "license_required",
+                    "banned": 0,
+                    "max_thc_mg": null,
+                    "license_type": "tobacco_retail",
+                    "effective_from": "2020-01-01",
+                    "effective_to": null,
+                    "source": "PROTOTYPE - verify before use",
+                    "notes": "Seeded starter rule; Rules Hub will supersede."
+                }
+            },
+            {
+                "code": "cr:KY:license_required:cigar:-:tobacco_retail:2020-01-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "KY",
+                    "tax_class": "cigar",
+                    "hemp_type": null,
+                    "rule": "license_required",
+                    "banned": 0,
+                    "max_thc_mg": null,
+                    "license_type": "tobacco_retail",
+                    "effective_from": "2020-01-01",
+                    "effective_to": null,
+                    "source": "PROTOTYPE - verify before use",
+                    "notes": "Seeded starter rule; Rules Hub will supersede."
+                }
+            },
+            {
+                "code": "cr:KY:license_required:vapor:-:tobacco_retail:2020-01-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "KY",
+                    "tax_class": "vapor",
+                    "hemp_type": null,
+                    "rule": "license_required",
+                    "banned": 0,
+                    "max_thc_mg": null,
+                    "license_type": "tobacco_retail",
+                    "effective_from": "2020-01-01",
+                    "effective_to": null,
+                    "source": "PROTOTYPE - verify before use",
+                    "notes": "Seeded starter rule; Rules Hub will supersede."
+                }
+            },
+            {
+                "code": "cr:IL:license_required:cigar:-:tobacco_wholesale:2020-01-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "IL",
+                    "tax_class": "cigar",
+                    "hemp_type": null,
+                    "rule": "license_required",
+                    "banned": 0,
+                    "max_thc_mg": null,
+                    "license_type": "tobacco_wholesale",
+                    "effective_from": "2020-01-01",
+                    "effective_to": null,
+                    "source": "PROTOTYPE - verify before use",
+                    "notes": "Seeded starter rule; Rules Hub will supersede."
+                }
+            },
+            {
+                "code": "cr:IL:license_required:pipe:-:tobacco_wholesale:2020-01-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "IL",
+                    "tax_class": "pipe",
+                    "hemp_type": null,
+                    "rule": "license_required",
+                    "banned": 0,
+                    "max_thc_mg": null,
+                    "license_type": "tobacco_wholesale",
+                    "effective_from": "2020-01-01",
+                    "effective_to": null,
+                    "source": "PROTOTYPE - verify before use",
+                    "notes": "Seeded starter rule; Rules Hub will supersede."
+                }
+            },
+            {
+                "code": "cr:IN:ban:kratom:-:-:2014-07-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "IN",
+                    "tax_class": "kratom",
+                    "hemp_type": null,
+                    "rule": "ban",
+                    "banned": 1,
+                    "max_thc_mg": null,
+                    "license_type": null,
+                    "effective_from": "2014-07-01",
+                    "effective_to": null,
+                    "source": "PROTOTYPE - verify before use",
+                    "notes": "Seeded starter rule; Rules Hub will supersede."
+                }
+            },
+            {
+                "code": "cr:TN:ban:kratom:-:-:2026-01-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "TN",
+                    "tax_class": "kratom",
+                    "hemp_type": null,
+                    "rule": "ban",
+                    "banned": 1,
+                    "max_thc_mg": null,
+                    "license_type": null,
+                    "effective_from": "2026-01-01",
+                    "effective_to": null,
+                    "source": "PROTOTYPE - verify before use",
+                    "notes": "Seeded starter rule; Rules Hub will supersede."
+                }
+            },
+            {
+                "code": "cr:IL:license_required:hemp:-:hemp:2020-01-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "IL",
+                    "tax_class": "hemp",
+                    "hemp_type": null,
+                    "rule": "license_required",
+                    "banned": 0,
+                    "max_thc_mg": null,
+                    "license_type": "hemp",
+                    "effective_from": "2020-01-01",
+                    "effective_to": null,
+                    "source": "PROTOTYPE - verify before use",
+                    "notes": "Seeded starter rule; Rules Hub will supersede."
+                }
+            },
+            {
+                "code": "cr:KY:thc_limit:hemp:-:-:2026-11-12",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "KY",
+                    "tax_class": "hemp",
+                    "hemp_type": null,
+                    "rule": "thc_limit",
+                    "banned": 0,
+                    "max_thc_mg": 0.4,
+                    "license_type": null,
+                    "effective_from": "2026-11-12",
+                    "effective_to": null,
+                    "source": "PROTOTYPE - verify federal hemp definition",
+                    "notes": "Placeholder for federal total-THC-per-container limit."
+                }
+            },
+            {
+                "code": "cr:IL:thc_limit:hemp:-:-:2026-11-12",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "IL",
+                    "tax_class": "hemp",
+                    "hemp_type": null,
+                    "rule": "thc_limit",
+                    "banned": 0,
+                    "max_thc_mg": 0.4,
+                    "license_type": null,
+                    "effective_from": "2026-11-12",
+                    "effective_to": null,
+                    "source": "PROTOTYPE - verify federal hemp definition",
+                    "notes": "Placeholder for federal total-THC-per-container limit."
+                }
+            },
+            {
+                "code": "cr:IN:thc_limit:hemp:-:-:2026-11-12",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "IN",
+                    "tax_class": "hemp",
+                    "hemp_type": null,
+                    "rule": "thc_limit",
+                    "banned": 0,
+                    "max_thc_mg": 0.4,
+                    "license_type": null,
+                    "effective_from": "2026-11-12",
+                    "effective_to": null,
+                    "source": "PROTOTYPE - verify federal hemp definition",
+                    "notes": "Placeholder for federal total-THC-per-container limit."
+                }
+            },
+            {
+                "code": "cr:TN:thc_limit:hemp:-:-:2026-11-12",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "TN",
+                    "tax_class": "hemp",
+                    "hemp_type": null,
+                    "rule": "thc_limit",
+                    "banned": 0,
+                    "max_thc_mg": 0.4,
+                    "license_type": null,
+                    "effective_from": "2026-11-12",
+                    "effective_to": null,
+                    "source": "PROTOTYPE - verify federal hemp definition",
+                    "notes": "Placeholder for federal total-THC-per-container limit."
+                }
+            },
+            {
+                "code": "cr:MS:thc_limit:hemp:-:-:2026-11-12",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "MS",
+                    "tax_class": "hemp",
+                    "hemp_type": null,
+                    "rule": "thc_limit",
+                    "banned": 0,
+                    "max_thc_mg": 0.4,
+                    "license_type": null,
+                    "effective_from": "2026-11-12",
+                    "effective_to": null,
+                    "source": "PROTOTYPE - verify federal hemp definition",
+                    "notes": "Placeholder for federal total-THC-per-container limit."
+                }
+            }
+        ],
+        "tax_rates": [
+            {
+                "code": "tx:KY:cigarette_per_20:2018-07-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "KY",
+                    "tax_type": "cigarette_per_20",
+                    "rate": 1.1,
+                    "basis": "per_unit",
+                    "increment_oz": null,
+                    "effective_from": "2018-07-01",
+                    "effective_to": null,
+                    "needs_verification": 1,
+                    "source": "KRS 138.140 / revenue.ky.gov Tobacco & Vapor Products Tax page (read 2026-10-20)",
+                    "notes": "VERIFY. Stamp tax $0.03 + surtax $1.06 + cancer-research surtax $0.01 per 20 sticks. Vega buys stamped: REPORT only, no tax due."
+                }
+            },
+            {
+                "code": "tx:KY:snuff_per_1_5oz:2009-04-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "KY",
+                    "tax_type": "snuff_per_1_5oz",
+                    "rate": 0.19,
+                    "basis": "per_increment",
+                    "increment_oz": 1.5,
+                    "effective_from": "2009-04-01",
+                    "effective_to": null,
+                    "needs_verification": 1,
+                    "source": "KRS 138.140 / revenue.ky.gov Tobacco & Vapor Products Tax page (read 2026-10-20)",
+                    "notes": "VERIFY. $0.19 per 1.5 oz or portion thereof, net weight. Start date is a guess (verify)."
+                }
+            },
+            {
+                "code": "tx:KY:chew_single_unit:2009-04-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "KY",
+                    "tax_type": "chew_single_unit",
+                    "rate": 0.19,
+                    "basis": "per_unit",
+                    "increment_oz": null,
+                    "effective_from": "2009-04-01",
+                    "effective_to": null,
+                    "needs_verification": 1,
+                    "source": "KRS 138.140 / revenue.ky.gov Tobacco & Vapor Products Tax page (read 2026-10-20)",
+                    "notes": "VERIFY. Single unit: net weight under 4 oz. Start date is a guess."
+                }
+            },
+            {
+                "code": "tx:KY:chew_half_pound_unit:2009-04-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "KY",
+                    "tax_type": "chew_half_pound_unit",
+                    "rate": 0.4,
+                    "basis": "per_unit",
+                    "increment_oz": null,
+                    "effective_from": "2009-04-01",
+                    "effective_to": null,
+                    "needs_verification": 1,
+                    "source": "KRS 138.140 / revenue.ky.gov Tobacco & Vapor Products Tax page (read 2026-10-20)",
+                    "notes": "VERIFY. Half-pound unit: 4 to 8 oz. Start date is a guess."
+                }
+            },
+            {
+                "code": "tx:KY:chew_pound_unit:2009-04-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "KY",
+                    "tax_type": "chew_pound_unit",
+                    "rate": 0.65,
+                    "basis": "per_unit",
+                    "increment_oz": null,
+                    "effective_from": "2009-04-01",
+                    "effective_to": null,
+                    "needs_verification": 1,
+                    "source": "KRS 138.140 / revenue.ky.gov Tobacco & Vapor Products Tax page (read 2026-10-20)",
+                    "notes": "VERIFY. Pound unit: over 8 to 16 oz. Start date is a guess."
+                }
+            },
+            {
+                "code": "tx:KY:chew_over16_per_4oz:2009-04-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "KY",
+                    "tax_type": "chew_over16_per_4oz",
+                    "rate": 0.19,
+                    "basis": "per_increment",
+                    "increment_oz": 4,
+                    "effective_from": "2009-04-01",
+                    "effective_to": null,
+                    "needs_verification": 1,
+                    "source": "KRS 138.140 / revenue.ky.gov Tobacco & Vapor Products Tax page (read 2026-10-20)",
+                    "notes": "VERIFY. Over 16 oz: $0.65 + $0.19 per 4 oz (or portion) above 16 oz."
+                }
+            },
+            {
+                "code": "tx:KY:otp_percent:2009-04-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "KY",
+                    "tax_type": "otp_percent",
+                    "rate": 0.15,
+                    "basis": "percent",
+                    "increment_oz": null,
+                    "effective_from": "2009-04-01",
+                    "effective_to": null,
+                    "needs_verification": 1,
+                    "source": "KRS 138.140 / revenue.ky.gov Tobacco & Vapor Products Tax page (read 2026-10-20)",
+                    "notes": "VERIFY. 15% of distributor actual selling price (excl. snuff, chew; premium cigars from 2026-07-01). Start date is a guess."
+                }
+            },
+            {
+                "code": "tx:KY:premium_cigar_percent:2026-07-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "KY",
+                    "tax_type": "premium_cigar_percent",
+                    "rate": 0.06,
+                    "basis": "percent",
+                    "increment_oz": null,
+                    "effective_from": "2026-07-01",
+                    "effective_to": null,
+                    "needs_verification": 1,
+                    "source": "KRS 138.140 / revenue.ky.gov Tobacco & Vapor Products Tax page (read 2026-10-20)",
+                    "notes": "VERIFY. HB 757 (2026): 6% of distributor actual selling price for premium cigars (KRS 138.130(13) definition)."
+                }
+            },
+            {
+                "code": "tx:KY:vapor_closed_per_cartridge:2020-07-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "KY",
+                    "tax_type": "vapor_closed_per_cartridge",
+                    "rate": 1.5,
+                    "basis": "per_unit",
+                    "increment_oz": null,
+                    "effective_from": "2020-07-01",
+                    "effective_to": null,
+                    "needs_verification": 1,
+                    "source": "KRS 138.140 / revenue.ky.gov Tobacco & Vapor Products Tax page (read 2026-10-20)",
+                    "notes": "VERIFY. $1.50 per closed vapor cartridge. Start date is a guess (verify)."
+                }
+            },
+            {
+                "code": "tx:KY:vapor_open_percent:2020-07-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "KY",
+                    "tax_type": "vapor_open_percent",
+                    "rate": 0.15,
+                    "basis": "percent",
+                    "increment_oz": null,
+                    "effective_from": "2020-07-01",
+                    "effective_to": null,
+                    "needs_verification": 1,
+                    "source": "KRS 138.140 / revenue.ky.gov Tobacco & Vapor Products Tax page (read 2026-10-20)",
+                    "notes": "VERIFY. 15% of actual price of open vaping system / liquid sold separately. Start date is a guess."
+                }
+            },
+            {
+                "code": "tx:KY:distributor_discount_percent:2000-01-01",
+                "overridable": false,
+                "data": {
+                    "jurisdiction": "KY",
+                    "tax_type": "distributor_discount_percent",
+                    "rate": 0,
+                    "basis": "percent",
+                    "increment_oz": null,
+                    "effective_from": "2000-01-01",
+                    "effective_to": null,
+                    "needs_verification": 1,
+                    "source": "KRS 138.140 / revenue.ky.gov Tobacco & Vapor Products Tax page (read 2026-10-20)",
+                    "notes": "VERIFY. Form 73A422 lines 6/13 allow a distributor discount. Rate NOT confirmed from public docs: set to 0 until Vega/CPA confirms."
+                }
+            }
+        ]
+    }
+}
